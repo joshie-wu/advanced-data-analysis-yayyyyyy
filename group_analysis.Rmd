@@ -1,0 +1,230 @@
+---
+title: "group_analysis"
+output: github_document
+---
+
+
+```{r, include=FALSE}
+library(dplyr); library(tidyr); library(arm) ; library(ggplot2)
+df <- read.csv('./inspection_results_with_ntas.csv')
+```
+
+# First Research Question 
+
+One of the main things we wanted to look at is how health inspection scores change for the same type of cuisine across different boroughs or neighborhoods. For example, there are Greek restaurants in both Manhattaan and Queens. Assuming the distribution of quality is similar in both boroughs, do we expect to see a difference in health score ratings? 
+
+## Applying Hamza's Notes 
+
+
+Our dataset currently contains 90 different types of cuisines; however, many of them can be grouped together. For example `Chinese` and `Japanese` can be grouped together to simply be `East Asian`, especially because there's another group called `Chinese\Japanese`. 
+
+We can also drop some restaurants from our dataset for this research question, as there are some restaurants who are classified as `""` and `Not Specified / Other`. After grouping into super-groups, we now have 10 types of cuisines: 
+
+1. American
+2. East Asian
+3. South & Southeast Asian 
+4. Latin American
+5. European 
+6. Mediterranean 
+7. Middle Eastern 
+8. African 
+9. Specific Dishes (Restaurants that only do Sandwiches, Bagels, Crepes, etc.)
+10. Dietary Specific (Vegan, Gluten-Free, Vegetarian restaurants)
+
+```{r, include = FALSE}
+
+hypercategory <- c(
+  "American"                       = "American",
+  "New American"                   = "American",
+  "Californian"                    = "American",
+  "Steakhouse"                     = "American",
+  "Barbecue"                       = "American",
+  "Hamburgers"                     = "American",
+  "Soul Food"                      = "American",
+  "Cajun"                          = "American",
+  "Creole"                         = "American",
+  "Creole/Cajun"                   = "American",
+  "Tex-Mex"                        = "American",
+  "Southwestern"                   = "American",
+ 
+  "Chinese"                        = "East Asian",
+  "Japanese"                       = "East Asian",
+  "Korean"                         = "East Asian",
+  "Chinese/Japanese"               = "East Asian",
+  "Chinese/Cuban"                  = "East Asian",
+ 
+  "Indian"                         = "South & Southeast Asian",
+  "Thai"                           = "South & Southeast Asian",
+  "Southeast Asian"                = "South & Southeast Asian",
+  "Bangladeshi"                    = "South & Southeast Asian",
+  "Pakistani"                      = "South & Southeast Asian",
+  "Filipino"                       = "South & Southeast Asian",
+  "Indonesian"                     = "South & Southeast Asian",
+  "Afghan"                         = "South & Southeast Asian",
+  "Asian/Asian Fusion"             = "South & Southeast Asian",
+ 
+  "Mexican"                        = "Latin American",
+  "Latin American"                 = "Latin American",
+  "Caribbean"                      = "Latin American",
+  "Peruvian"                       = "Latin American",
+  "Brazilian"                      = "Latin American",
+  "Chilean"                        = "Latin American",
+  "Polynesian"                     = "Latin American",
+  "Hawaiian"                       = "Latin American",
+ 
+  "Italian"                        = "European",
+  "French"                         = "European",
+  "Spanish"                        = "European",
+  "English"                        = "European",
+  "German"                         = "European",
+  "Portuguese"                     = "European",
+  "Polish"                         = "European",
+  "Russian"                        = "European",
+  "Eastern European"               = "European",
+  "Irish"                          = "European",
+  "Scandinavian"                   = "European",
+  "Czech"                          = "European",
+  "Basque"                         = "European",
+  "New French"                     = "European",
+  "Continental"                    = "European",
+  "Haute Cuisine"                  = "European",
+  "Australian"                     = "European",
+ 
+  "Mediterranean"                  = "Mediterranean",
+  "Greek"                          = "Mediterranean",
+  "Turkish"                        = "Mediterranean",
+  "Lebanese"                       = "Mediterranean",
+  "Moroccan"                       = "Mediterranean",
+  "Tapas"                          = "Mediterranean",
+ 
+  "Middle Eastern"                 = "Middle Eastern",
+  "Egyptian"                       = "Middle Eastern",
+  "Iranian"                        = "Middle Eastern",
+  "Armenian"                       = "Middle Eastern",
+  "Jewish/Kosher"                  = "Middle Eastern",
+ 
+  "African"                        = "African",
+  "Ethiopian"                      = "African",
+ 
+  "Pizza"                          = "Dish-Type",
+  "Sandwiches"                     = "Dish-Type",
+  "Chicken"                        = "Dish-Type",
+  "Seafood"                        = "Dish-Type",
+  "Hotdogs"                        = "Dish-Type",
+  "Hotdogs/Pretzels"               = "Dish-Type",
+  "Bagels/Pretzels"                = "Dish-Type",
+  "Pancakes/Waffles"               = "Dish-Type",
+  "Salads"                         = "Dish-Type",
+  "Soups"                          = "Dish-Type",
+ 
+  "Coffee/Tea"                     = "Beverages & Sweets",
+  "Juice, Smoothies, Fruit Salads" = "Beverages & Sweets",
+  "Bottled Beverages"              = "Beverages & Sweets",
+  "Donuts"                         = "Beverages & Sweets",
+  "Frozen Desserts"                = "Beverages & Sweets",
+  "Bakery Products/Desserts"       = "Beverages & Sweets",
+  "Nuts/Confectionary"             = "Beverages & Sweets",
+ 
+  "Vegan"                          = "Dietary Style",
+  "Vegetarian"                     = "Dietary Style",
+  "Fruits/Vegetables"              = "Dietary Style",
+ 
+  "Fusion"                         = "Mixed/Uncategorized",
+  "Sandwiches/Salads/Mixed Buffet" = "Mixed/Uncategorized",
+  "Soups/Salads/Sandwiches"        = "Mixed/Uncategorized",
+  "Other"                          = "Mixed/Uncategorized",
+  "Not Listed/Not Applicable"      = "Mixed/Uncategorized",
+  " "                               = "Mixed/Uncategorized"
+)
+
+
+df$hypercategory <- hypercategory[df$cuisine]
+
+df <- df[!is.na(df$hypercategory), ]
+df <- df[!is.na(df$score), ]
+
+df <- df %>%
+  filter(hypercategory != "Mixed/Uncategorized")
+
+```
+
+
+Now, the data looks something like: 
+
+```{r}
+head(df %>% dplyr::select(score, borough, cuisine, hypercategory))
+```
+
+
+Now for an initial exploratory analysis with graphs. Important to keep in mind that lower scores are better. 
+
+```{r, echo = FALSE}
+ggplot(df, aes(x = inspection_date, y = score)) +
+  geom_point()+
+  labs(x = "Inspection Date", y = "Inspection Score")+
+  geom_hline(yintercept  = 13, color = "green") + 
+  geom_hline(yintercept = 27, color = "yellow")+
+  theme_minimal()
+
+```
+Scores on or below the green line are restaurants who earned a `A` grade. Restaurants who scored above the green line or under the yellow line are those who scored a `B` grade. Any scores above the yellow represent a `C` grade. 
+
+It may help to also see how the score distribution by cuisine. For a clearer picture, I will take a random sample. 
+
+```{r, echo=FALSE}
+graph_df <- df %>% slice_sample(n = 1000)
+
+
+ggplot(graph_df, aes(x = inspection_date, y = score, colour = hypercategory)) +
+  geom_point()+
+  labs(x = "Inspection Date", y = "Inspection Score")+
+  geom_hline(yintercept  = 13, color = "green") + 
+  geom_hline(yintercept = 27, color = "yellow")+
+  theme_minimal() + 
+  theme(
+     axis.ticks.x = element_blank(),
+     axis.text.x = element_blank()
+  )
+```
+
+From a quick glance, there seems to be a variety of restaurant types in each grade bucket in our sample. Diving into each cuisine type specifically, 
+
+```{r, echo = FALSE}
+
+ggplot(df, aes(x = inspection_date, y = score, colour = borough)) +
+  geom_point()+
+  labs(x = NULL, y = NULL)+
+  geom_hline(yintercept  = 13, color = "green") + 
+  geom_hline(yintercept = 27, color = "yellow")+
+  theme_minimal() + 
+  theme(
+     axis.ticks.x = element_blank(),
+     axis.text.x = element_blank()  ) +
+  facet_wrap(~ hypercategory)
+
+```
+
+Time for regression:
+
+Across all boroughs, do the restaurant  of the same cuisine type have the same expected score? 
+```{r}
+fit1 <- lm(score ~ factor(borough) * factor(hypercategory),
+           data = df)
+
+display(fit1)
+```
+
+Bronx is the baseline borough and African is the baseline hypercategory. 
+
+```{r}
+co <- coef(fit1)
+se <- sqrt(diag(vcov(fit1)))
+
+keep <- c("factor(borough)Brooklyn",
+          "factor(borough)Manhattan",
+          "factor(borough)Queens",
+          "factor(borough)Staten Island")
+
+arm::coefplot(co[keep], sds = se[keep],
+              col.pts = "blue")
+```
