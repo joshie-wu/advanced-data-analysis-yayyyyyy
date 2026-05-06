@@ -11,7 +11,7 @@ df <- read.csv('./inspection_results_with_ntas.csv')
 
 # First Research Question 
 
-One of the main things we wanted to look at is how health inspection scores change for the same type of cuisine across different boroughs or neighborhoods. For example, there are Greek restaurants in both Manhattaan and Queens. Assuming the distribution of quality is similar in both boroughs, do we expect to see a difference in health score ratings? 
+One of the main things we wanted to look at is how health inspection scores change for the same type of cuisine across different boroughs or neighborhoods. For example, there are Greek restaurants in both Manhattaan and Queens. Assuming the distribution of quality is similar in both boroughs, do we expect to see a difference in health score ratings?  
 
 ## Applying Hamza's Notes 
 
