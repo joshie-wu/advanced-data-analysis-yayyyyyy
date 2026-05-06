@@ -210,8 +210,6 @@ Across all boroughs, do the restaurant  of the same cuisine type have the same e
 ```{r}
 fit1 <- lm(score ~ factor(borough) * factor(hypercategory),
            data = df)
-
-display(fit1)
 ```
 
 Bronx is the baseline borough and African is the baseline hypercategory. 
