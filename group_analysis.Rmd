@@ -226,3 +226,60 @@ keep <- c("factor(borough)Brooklyn",
 arm::coefplot(co[keep], sds = se[keep],
               col.pts = "blue")
 ```
+
+
+
+Going to ignore other coefficient plots for now, becuase I don't know how to work it. But, I think we can do a block design ANOVA? 
+
+```{r}
+
+sample_block_design <- function(df, n_per_cell) {
+  cell_counts <- df %>%
+    count(hypercategory, borough, name = "n")
+
+  insufficient <- cell_counts %>%
+    filter(n < n_per_cell)
+  
+  if (nrow(insufficient) > 0) {
+    msg <- paste0(
+      "Not enough observations in the following hypercategory × borough cells:\n",
+      paste0(
+        "  - (", insufficient$hypercategory, ", ", insufficient$borough, 
+        "): n = ", insufficient$n,
+        collapse = "\n"
+      )
+    )
+    stop(msg)
+  }
+  
+  df %>%
+    group_by(hypercategory, borough) %>%
+    slice_sample(n = n_per_cell, replace = FALSE) %>%
+    ungroup()
+}
+```
+Ok, so we should probably drop Staten Island and Dietary Style, since those are the two most sparsely populated categories.
+
+```{r, include = FALSE}
+df <- df %>%
+  filter(borough != "Staten Island") %>%
+  filter(hypercategory != "Dietary Style")
+
+
+sampled_df <- sample_block_design(df, n_per_cell = 30)
+display_anova_table <- function(df) {
+  with(df, table(hypercategory, borough))
+}
+```
+
+
+```{r}
+display_anova_table(df)
+
+anova_model <- aov(score ~ hypercategory * borough, data = sampled_df)
+```
+
+```{r}
+summary(anova_model)
+
+```

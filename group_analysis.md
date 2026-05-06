@@ -94,3 +94,69 @@ arm::coefplot(co[keep], sds = se[keep],
 ```
 
 ![](group_analysis_files/figure-gfm/unnamed-chunk-8-1.png)<!-- -->
+
+Going to ignore other coefficient plots for now, becuase I don’t know
+how to work it. But, I think we can do a block design ANOVA?
+
+``` r
+sample_block_design <- function(df, n_per_cell) {
+  cell_counts <- df %>%
+    count(hypercategory, borough, name = "n")
+
+  insufficient <- cell_counts %>%
+    filter(n < n_per_cell)
+  
+  if (nrow(insufficient) > 0) {
+    msg <- paste0(
+      "Not enough observations in the following hypercategory × borough cells:\n",
+      paste0(
+        "  - (", insufficient$hypercategory, ", ", insufficient$borough, 
+        "): n = ", insufficient$n,
+        collapse = "\n"
+      )
+    )
+    stop(msg)
+  }
+  
+  df %>%
+    group_by(hypercategory, borough) %>%
+    slice_sample(n = n_per_cell, replace = FALSE) %>%
+    ungroup()
+}
+```
+
+Ok, so we should probably drop Staten Island and Dietary Style, since
+those are the two most sparsely populated categories.
+
+``` r
+display_anova_table(df)
+```
+
+    ##                          borough
+    ## hypercategory             Bronx Brooklyn Manhattan Queens
+    ##   African                   202      167       139     31
+    ##   American                 1476     4588     10088   3777
+    ##   Beverages & Sweets       1366     4565      6933   3904
+    ##   Dish-Type                1970     3491      4434   3010
+    ##   East Asian               1080     4172      5763   5491
+    ##   European                  952     2035      4484   1489
+    ##   Latin American           2022     4516      2235   5237
+    ##   Mediterranean              50      700      1114    532
+    ##   Middle Eastern            113     1511       651    516
+    ##   South & Southeast Asian   220     1717      2614   2485
+
+``` r
+anova_model <- aov(score ~ hypercategory * borough, data = sampled_df)
+```
+
+``` r
+summary(anova_model)
+```
+
+    ##                         Df Sum Sq Mean Sq F value   Pr(>F)    
+    ## hypercategory            9  22395  2488.3   5.781 6.83e-08 ***
+    ## borough                  3    546   182.0   0.423   0.7366    
+    ## hypercategory:borough   27  17410   644.8   1.498   0.0492 *  
+    ## Residuals             1160 499276   430.4                     
+    ## ---
+    ## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
