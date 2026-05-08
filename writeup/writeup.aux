@@ -4,38 +4,43 @@
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \citation{wellington2014}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Introduction}{1}{section.1}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Distribution of NYC restaurant inspection scores (2010--2026). Green bars represent A-grade inspections (score $\leq 13$); blue bars B-grade; red bars C-grade. The dashed line shows the expected flat baseline in the 12--16 range under uniform grading.}}{2}{figure.caption.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Data}{1}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Sources}{1}{subsection.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Preparation}{1}{subsection.2.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Dataset summary after cleaning.}}{2}{table.caption.1}\protected@file@percent }
 \providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:score_dist}{{1}{2}{Distribution of NYC restaurant inspection scores (2010--2026). Green bars represent A-grade inspections (score $\leq 13$); blue bars B-grade; red bars C-grade. The dashed line shows the expected flat baseline in the 12--16 range under uniform grading}{figure.caption.1}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Data Collection and Data Description}{2}{section.2}\protected@file@percent }
-\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Dataset summary statistics after cleaning.}}{3}{table.caption.3}\protected@file@percent }
-\newlabel{tab:summary}{{1}{3}{Dataset summary statistics after cleaning}{table.caption.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Statistical Models}{3}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Formal Test of Grade-Boundary Spike}{3}{subsection.3.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Temporal Trend}{3}{subsection.3.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Two-Way Blocked ANOVA (Inferential)}{3}{subsection.3.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Violation Type by Borough ($\chi ^2$ Test)}{4}{subsection.3.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Predictive Model: Logistic Regression (Pre-Inspection Features)}{4}{subsection.3.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{4}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Grade-Boundary Spike Persists and Has Grown}{4}{subsection.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Scores Are Worsening Over Time}{4}{subsection.4.2}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Zoomed view of inspection score distribution (scores 5--25). The dashed line shows the expected count per score under a flat distribution estimated from scores 14--21. The A/B boundary spike is dramatic and statistically conclusive.}}{5}{figure.caption.4}\protected@file@percent }
-\newlabel{fig:bump}{{2}{5}{Zoomed view of inspection score distribution (scores 5--25). The dashed line shows the expected count per score under a flat distribution estimated from scores 14--21. The A/B boundary spike is dramatic and statistically conclusive}{figure.caption.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Borough and Cuisine Effects (ANOVA)}{5}{subsection.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Violation Types Vary Significantly Across Boroughs}{5}{subsection.4.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Predictive Model: Pre-Inspection Features Barely Predict Grade}{5}{subsection.4.5}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Mean and median inspection score by year, restricted to initial-cycle inspections. Shaded band is a 95\% confidence interval on the mean. Lower scores are better; the A-grade cutoff (13) is shown in green.}}{6}{figure.caption.5}\protected@file@percent }
-\newlabel{fig:temporal}{{3}{6}{Mean and median inspection score by year, restricted to initial-cycle inspections. Shaded band is a 95\% confidence interval on the mean. Lower scores are better; the A-grade cutoff (13) is shown in green}{figure.caption.5}{}}
-\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Predictive model performance comparison.}}{6}{table.caption.9}\protected@file@percent }
-\newlabel{tab:model_compare}{{2}{6}{Predictive model performance comparison}{table.caption.9}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Model Validation and Generalization}{6}{section.5}\protected@file@percent }
-\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Inspection score distributions. Manhattan restaurants score best (median 19); Queens worst (median 22). Cuisine type effects are also present, with African and European restaurants scoring highest.}}{7}{figure.caption.6}\protected@file@percent }
-\newlabel{fig:boro_cuisine}{{4}{7}{Inspection score distributions. Manhattan restaurants score best (median 19); Queens worst (median 22). Cuisine type effects are also present, with African and European restaurants scoring highest}{figure.caption.6}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{7}{section.6}\protected@file@percent }
+\newlabel{tab:summary}{{1}{2}{Dataset summary after cleaning}{table.caption.1}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {3}Statistical Models}{2}{section.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Bump Test}{2}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Temporal Trend}{2}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Two-Way Blocked ANOVA}{2}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Violation Type by Borough}{2}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Predictive Logistic Regression}{2}{subsection.3.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Results}{2}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}The Grade-Boundary Spike Is Large and Ongoing}{2}{subsection.4.1}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Inspection score distribution (2010--2026). Green bars are A-grade inspections; blue are B; red are C. The dashed line shows the expected flat baseline near the A/B cutoff.}}{3}{figure.caption.2}\protected@file@percent }
+\newlabel{fig:score_dist}{{1}{3}{Inspection score distribution (2010--2026). Green bars are A-grade inspections; blue are B; red are C. The dashed line shows the expected flat baseline near the A/B cutoff}{figure.caption.2}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Zoomed view of scores 5--25. The dashed line shows the expected flat baseline. The spike at 12--13 represents roughly 15,000 inspections above what would be expected under uniform grading.}}{3}{figure.caption.3}\protected@file@percent }
+\newlabel{fig:bump}{{2}{3}{Zoomed view of scores 5--25. The dashed line shows the expected flat baseline. The spike at 12--13 represents roughly 15,000 inspections above what would be expected under uniform grading}{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Inspection Scores Have Worsened Substantially}{3}{subsection.4.2}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Mean and median inspection score by year (initial-cycle inspections only, one row per inspection event). The green dotted line marks the A-grade cutoff at 13.}}{3}{figure.caption.4}\protected@file@percent }
+\newlabel{fig:temporal}{{3}{3}{Mean and median inspection score by year (initial-cycle inspections only, one row per inspection event). The green dotted line marks the A-grade cutoff at 13}{figure.caption.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Borough and Cuisine Have Modest but Significant Effects}{3}{subsection.4.3}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces Score distributions by borough. Lower is better. Medians range from 19 (Manhattan) to 22 (Queens).}}{3}{figure.caption.5}\protected@file@percent }
+\newlabel{fig:boro_cuisine}{{4}{3}{Score distributions by borough. Lower is better. Medians range from 19 (Manhattan) to 22 (Queens)}{figure.caption.5}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Violation Types Vary Significantly Across Boroughs}{4}{subsection.4.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Violation category rates by borough (\% of inspections). Darker cells indicate higher violation rates. Pest Control and temperature-related violations show the strongest geographic variation.}}{4}{figure.caption.6}\protected@file@percent }
+\newlabel{fig:heatmap}{{5}{4}{Violation category rates by borough (\% of inspections). Darker cells indicate higher violation rates. Pest Control and temperature-related violations show the strongest geographic variation}{figure.caption.6}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Pre-Inspection Features Cannot Reliably Predict Grade}{4}{subsection.4.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Predictive model performance.}}{4}{table.caption.7}\protected@file@percent }
+\newlabel{tab:model_compare}{{2}{4}{Predictive model performance}{table.caption.7}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces ROC curve for the pre-inspection logistic regression. An AUC near 0.60 indicates limited predictive power from borough, cuisine, and neighborhood variables alone.}}{4}{figure.caption.8}\protected@file@percent }
+\newlabel{fig:roc}{{6}{4}{ROC curve for the pre-inspection logistic regression. An AUC near 0.60 indicates limited predictive power from borough, cuisine, and neighborhood variables alone}{figure.caption.8}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Model Validation}{4}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Conclusion}{5}{section.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Two-way ANOVA results ($n = 30$ per cell, Bronx and African cuisine as baselines, Staten Island and Dietary Style excluded).}}{5}{table.caption.11}\protected@file@percent }
+\newlabel{tab:anova}{{3}{5}{Two-way ANOVA results ($n = 30$ per cell, Bronx and African cuisine as baselines, Staten Island and Dietary Style excluded)}{table.caption.11}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Score distributions by cuisine hypercategory. African and European restaurants score best on average; Dish-Type and Beverages \& Sweets score worst.}}{5}{figure.caption.13}\protected@file@percent }
 \bibcite{wellington2014}{1}
-\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces Heatmap of violation category rates by borough (percentage of inspections in each borough receiving that violation type). $\chi ^2 = 678.2$, $df = 66$, $p < 0.001$.}}{8}{figure.caption.7}\protected@file@percent }
-\newlabel{fig:heatmap}{{5}{8}{Heatmap of violation category rates by borough (percentage of inspections in each borough receiving that violation type). $\chi ^2 = 678.2$, $df = 66$, $p < 0.001$}{figure.caption.7}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces ROC curve for the pre-inspection logistic regression model. Features include only borough, cuisine, and neighborhood-level socioeconomic variables---information available before the inspection.}}{9}{figure.caption.8}\protected@file@percent }
-\newlabel{fig:roc}{{6}{9}{ROC curve for the pre-inspection logistic regression model. Features include only borough, cuisine, and neighborhood-level socioeconomic variables---information available before the inspection}{figure.caption.8}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Logistic regression coefficients for the pre-inspection model (top 15 by absolute magnitude). Green bars indicate positive association with earning an A grade; red bars indicate negative association.}}{10}{figure.caption.14}\protected@file@percent }
-\gdef \@abspage@last{10}
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Top 15 coefficients from the pre-inspection logistic regression. Green indicates positive association with earning an A; red indicates negative association. No predictor has a large coefficient, consistent with the low AUC.}}{6}{figure.caption.14}\protected@file@percent }
+\gdef \@abspage@last{6}
