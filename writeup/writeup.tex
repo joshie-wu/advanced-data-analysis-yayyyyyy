@@ -728,13 +728,25 @@ becomes a question with direct public health implications.
 
 \section{Code}
 
-All Python analysis code is provided in three scripts:
-\texttt{new\_analysis.py} (main EDA and logistic models),
-\texttt{extended\_analysis.py} (OLS, violation logistic, A-grade trends),
-and \texttt{analysis\_extras.py} (density discontinuity, bootstrap,
-restaurant fixed effects, model comparison). The R analysis and ANOVA
-are in \texttt{group\_analysis.Rmd}. All files are submitted alongside
-this report.
+All code is available at:
+\url{https://github.com/joshie-wu/advanced-data-analysis-yayyyyyy/blob/main/writeup/writeup.pdf}
+
+A single aggregated file (\texttt{combined\_analysis\_code.py}) is also
+submitted alongside this report. It combines all Python scripts and
+embeds the R code as a comment block for convenience. The individual
+source files are:
+
+\begin{itemize}
+  \item \texttt{new\_analysis.py} — main EDA, score distribution, temporal trend,
+    violation heatmap, pre-inspection logistic regression
+  \item \texttt{extended\_analysis.py} — OLS regression, violation-level logistic,
+    A-grade trends by borough and year
+  \item \texttt{analysis\_extras.py} — density discontinuity / McCrary test,
+    bootstrap CIs, restaurant-level clustering, model comparison (logistic /
+    random forest / gradient boosting), trajectory analysis
+  \item \texttt{group\_analysis.Rmd} — two-way balanced ANOVA in R,
+    block design sampling, initial exploratory regression
+\end{itemize}
 
 \begin{thebibliography}{9}
 
