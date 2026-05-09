@@ -20,6 +20,10 @@
 \title{\textbf{Grading on a Curve? An Analysis of NYC Restaurant Health Inspection Scores}}
 \author{
   % TODO: add names and UNIs
+  Boyan Shang (bs3675) \quad
+  Joshua Wenjun Wu (jww2145) \\
+  Amira Gbagba (ahg2170) \quad
+  Rebeca De La Garza Evia (rd3055)
 }
 \date{May 8, 2026}
 
@@ -27,84 +31,86 @@
 
 \maketitle
 
-% ============================================================
 \section{Introduction}
-% ============================================================
 
 New York City grades every restaurant in its five boroughs through the
 Department of Health and Mental Hygiene (DOHMH) inspection system. Each
-inspection assigns a numerical score based on health code violations
-found, where a lower score is better. A score of 13 or below earns an
-``A,'' 14 to 27 earns a ``B,'' and 28 or above earns a ``C.''
-Restaurants post their letter grade in the window, making the grading
-system unusually visible to the public.
+inspection assigns a numerical score based on health code violations found
+on the day of inspection, where a lower score indicates better performance.
+A score of 13 or below earns an ``A,'' 14 to 27 earns a ``B,'' and 28 or
+above earns a ``C.'' These letter grades are publicly posted at restaurant
+entrances, making the grading system unusually visible and consequential
+for businesses and consumers alike.
 
-In 2014, data journalist Ben Wellington published an analysis noting a
-suspicious spike in inspection scores precisely at 13, the last score
-that qualifies for an A grade \cite{wellington2014}. His hypothesis was
-that inspectors exercise informal leniency near grade boundaries, perhaps
-because issuing a score of 13 instead of 14 spares a restaurant the
-reputational cost of a B grade. The NYC Health Department responded that
-``inspectors are not instructed to offer leniency, just to cite what they
-see.'' Wellington's data, however, covered only 2010 to 2014, and the
-question has not been revisited formally with more recent data.
+In 2014, data journalist Ben Wellington published an analysis noting an
+anomalous spike in inspection scores at exactly 13, the highest score
+that qualifies for an A grade \cite{wellington2014}. Wellington's
+explanation was that inspectors may exercise informal leniency near grade
+boundaries, perhaps because a score of 13 is judged equivalently to a
+score of 10 by the letter-grading rubric, while a score of 14 carries a
+substantial reputational cost. The NYC Health Department denied this,
+stating that ``inspectors are not instructed to offer leniency.''
+Wellington's data, however, only covered 2010 to 2014, and no one has
+formally revisited the question with newer data.
 
-Our study has three aims. First, we test whether the grade-boundary spike
-persists in data updated through 2026 and quantify its magnitude
-statistically. Second, we ask whether a restaurant's borough and cuisine
-type explain meaningful variation in inspection scores, using a two-way
-blocked ANOVA. Third, we examine whether violation types are distributed
-uniformly across boroughs, addressing the question of whether different
-parts of the city face different kinds of food safety challenges.
+This study does exactly that, using inspection data updated through 2026.
+We extend the original analysis in four directions. First, we formally
+test whether the grade-boundary spike persists and measure how large it
+has become. Second, we quantify whether a restaurant's borough and cuisine
+type explain meaningful variation in inspection scores, using a regression
+framework and a two-way blocked ANOVA. Third, we examine whether violation
+types are distributed consistently across the four boroughs, or whether
+geography predicts which kinds of food safety hazards are most prevalent.
+Finally, we assess how well pre-inspection information can actually predict
+whether a restaurant will earn an A grade, providing an honest upper bound
+on what contextual factors alone can tell us.
 
-As a secondary predictive exercise, we also evaluate how well
-pre-inspection characteristics alone, such as borough, cuisine, and
-neighborhood income, can forecast whether a restaurant will earn an A.
-This tests whether the outcome is predictable from context or whether it
-depends primarily on the restaurant's own practices.
+The public health stakes are real. Firestone and Hedberg (2018) showed
+that the NYC grading program reduced Salmonella infections by 5.3\% per
+year relative to the rest of New York State following its 2010
+implementation. Understanding what drives variation in inspection outcomes
+is therefore not only a statistical question but a public health one.
 
-% ============================================================
 \section{Data}
-% ============================================================
 
 \subsection{Sources}
 
 The primary dataset is the DOHMH New York City Restaurant Inspection
 Results file, downloaded from NYC OpenData on April 3, 2026. It contains
-113,571 records covering inspections from 2007 through 2026. The data is
-structured with one row per violation per inspection, so a single
-inspection event appears multiple times if multiple violations were cited.
-Key fields include borough, cuisine type, inspection score, inspection
-date, violation code, and inspection type (initial cycle, re-inspection,
-reopening, etc.).
+113,571 records spanning inspections from 2007 through early 2026.
+The data is structured with one row per violation per inspection, so a
+single inspection event appears multiple times if multiple violations were
+cited. Key variables include borough, cuisine type, inspection score,
+inspection date, violation code, and inspection type (initial cycle,
+re-inspection, reopening, etc.).
 
-Violation codes alone are not self-explanatory, so we used a secondary
-NYC Health Department reference file that maps each code to a descriptive
-category, such as ``Pest Control,'' ``Cold Holding,'' or ``Handwash /
+Violation codes alone are not self-explanatory. We used a secondary NYC
+Health Department reference file mapping each code to a descriptive
+category such as ``Pest Control,'' ``Cold Holding,'' or ``Handwash /
 Toilet.'' We also merged neighborhood-level American Community Survey
 estimates at the 2020 Neighborhood Tabulation Area (NTA) level, including
-median worker earnings (\texttt{MdEWrkE}) and total population
-(\texttt{Pop\_1E}), to capture socioeconomic context.
+median worker earnings and total population, to capture the socioeconomic
+context of each restaurant's location.
 
 \subsection{Preparation}
 
-Because the raw data has one row per violation, we deduplicated to one
-row per inspection event when computing scores and temporal trends, taking
-the first score value within each restaurant-date pair. This avoids
-artificially upweighting inspections with many violations.
+Several preprocessing decisions were made to ensure the analysis is
+methodologically sound. Because the raw data has one row per violation,
+we deduplicated to one row per inspection event whenever computing
+scores or temporal trends, taking the first score value within each
+restaurant-date pair. This prevents inspections with many violations from
+being weighted more heavily than inspections with fewer.
 
 Staten Island was excluded throughout due to sparse cell counts in the
-ANOVA design. Inspections with missing scores were also removed. The
-cleaned dataset contains 101,840 records covering 19,065 unique
+balanced ANOVA design. Inspections with missing scores were removed.
+The cleaned dataset contains 101,840 records covering 19,065 unique
 restaurants across four boroughs.
 
 Cuisine types were grouped into ten \textit{hypercategories} to reduce
-dimensionality and improve interpretability: American, East Asian,
-South \& Southeast Asian, Latin American, European, Mediterranean,
-Middle Eastern, African, Dish-Type, and Beverages \& Sweets. For
-example, Chinese, Japanese, Korean, and related cuisines were collapsed
-into ``East Asian.'' The Dietary Style category (Vegan, Vegetarian, etc.)
-was also excluded from the ANOVA due to sparse borough-level cell counts.
+dimensionality and improve interpretability. For example, Chinese,
+Japanese, Korean, and related cuisines were collapsed into ``East Asian.''
+The Dietary Style category was also excluded from the ANOVA due to sparse
+borough-level cell counts. Table~\ref{tab:summary} summarizes the dataset.
 
 \begin{table}[h]
   \centering
@@ -117,7 +123,8 @@ was also excluded from the ANOVA due to sparse borough-level cell counts.
     \midrule
     Inspection records & 101,840 \\
     Unique restaurants & 19,065 \\
-    Years covered & 2010--2026 \\
+    Boroughs & Bronx, Brooklyn, Manhattan, Queens \\
+    Full data coverage & 2022--2026 \\
     A-grade rate & 38.7\% \\
     Mean score (SD) & 25.5 (19.3) \\
     Median score & 21 \\
@@ -125,326 +132,514 @@ was also excluded from the ANOVA due to sparse borough-level cell counts.
   \end{tabular}
 \end{table}
 
-% ============================================================
-\section{Statistical Models}
-% ============================================================
+A note on temporal coverage: while the dataset nominally spans 2007
+through 2026, the vast majority of inspection records fall in 2022 through
+2025. Prior to 2022, fewer than 90 inspection events per year appear after
+deduplication, making those years unsuitable for inference. All temporal
+analyses are therefore restricted to 2022 through 2025.
 
-\subsection{Bump Test}
+\section{Methods}
 
-To assess whether the spike at score 13 is statistically meaningful, we
+\subsection{Grade-Boundary Spike}
+
+To test whether the spike at score 13 is statistically significant, we
 compared observed inspection counts across scores 12 to 21 against an
-expected uniform (flat) distribution. The expected count per score was
-estimated as the mean count at scores 14 to 21, a range safely away from
-both the A/B and B/C cutoffs. A chi-square goodness-of-fit test was
-applied to observed versus expected counts in this range.
+expected flat distribution. The expected count per score was estimated as
+the mean count at scores 14 to 21, a range safely removed from both
+grade cutoffs. A chi-square goodness-of-fit test was applied to observed
+versus expected counts. This approach follows Wellington's original
+methodology but formalizes it with an inferential test.
+
+We replicated the analysis separately for each borough to examine whether
+the boundary leniency varies geographically.
 
 \subsection{Temporal Trend}
 
-We restricted to initial-cycle inspections between 2015 and 2025 and
-aggregated to one observation per inspection event. We then computed the
-mean score by year and estimated the trend using ordinary least squares
-regression of mean score on year.
+We restricted to initial-cycle inspections between 2022 and 2025 and
+aggregated to one observation per inspection event. Mean score by year was
+computed for each borough, and we estimated the overall trend using
+ordinary least squares regression of mean score on year. We also tracked
+A-grade rates by year and borough to see whether the probability of
+earning a top grade has shifted over this period.
+
+\subsection{OLS Regression of Inspection Score}
+
+To assess the simultaneous contributions of borough, cuisine type, and
+time on inspection score, we fit an ordinary least squares regression:
+\[
+  \text{Score}_i = \beta_0 + \boldsymbol{\beta}_{\text{boro}} + \boldsymbol{\beta}_{\text{cuisine}} + \beta_{\text{year}} \cdot t_i + \varepsilon_i
+\]
+where borough and cuisine are entered as categorical indicators (Bronx and
+African cuisine as baselines) and year is centered at 2022. We used
+inspection-level data, deduplicated to one row per inspection event.
+Confidence intervals are reported at the 95\% level. The regression
+quantifies how much each factor contributes to score variation, and
+crucially, how much variation remains unexplained.
 
 \subsection{Two-Way Blocked ANOVA}
 
-To assess whether borough and cuisine type explain variance in inspection
-scores, we fit a two-way ANOVA with interaction:
+To complement the regression with a formal testing framework, we fit a
+two-way ANOVA with interaction:
 \[
-  \text{Score}_{ijk} \;=\; \mu + \alpha_i + \beta_j + (\alpha\beta)_{ij} + \varepsilon_{ijk}
+  \text{Score}_{ijk} = \mu + \alpha_i + \beta_j + (\alpha\beta)_{ij} + \varepsilon_{ijk}
 \]
-where $\alpha_i$ is the borough effect and $\beta_j$ is the
-hypercategory effect. To keep the design balanced and prevent very large
-sample sizes from producing trivially small $p$-values, we sampled
-$n = 30$ observations per hypercategory-borough cell.
+where $\alpha_i$ represents the borough effect and $\beta_j$ represents
+the hypercategory effect. To maintain a balanced design and prevent
+large sample sizes from producing trivially small $p$-values for negligible
+effects, we sampled $n = 30$ observations per hypercategory-borough cell.
 
 \subsection{Violation Type by Borough}
 
-To answer whether certain violation types are associated with particular
+To answer whether violation types are uniformly distributed across
 boroughs, we built a contingency table of violation category by borough
-and applied Pearson's chi-square test of independence.
+and applied Pearson's chi-square test of independence. We also computed
+the percentage of inspections in each borough that received each violation
+type and displayed these rates as a heatmap.
+
+\subsection{Violation-Level Logistic Regression}
+
+Rather than trying to predict grades from pre-inspection characteristics
+alone, we asked an inferential question: given that a violation was
+cited during an inspection, does the type of violation predict whether
+the restaurant will earn an A? This is a legitimate inferential question
+because different violations carry different point values and may reflect
+different levels of underlying hygiene risk.
+
+We fit a logistic regression with violation category, borough, cuisine
+hypercategory, and neighborhood income as predictors of the binary A-grade
+outcome. The coefficient plot for violation categories provides a
+controlled ranking of which violation types are most strongly associated
+with failing an A.
 
 \subsection{Predictive Logistic Regression}
 
-We fit a logistic regression using only features available before an
+As a final analysis, we assessed how well a restaurant can be predicted
+to earn or fail an A grade using only information available before
 inspection: borough, cuisine hypercategory, neighborhood median earnings,
-neighborhood population, and inspection year. The outcome is a binary
-A-grade indicator (score $\leq 13$). Predictors were standardized on
-the training set. We used an 80/20 stratified train-test split and
-evaluated performance using AUC and accuracy.
+neighborhood population, and year. Predictors were standardized on the
+training set. We used an 80/20 stratified train-test split and evaluate
+performance using AUC and accuracy on the held-out test set.
 
-% ============================================================
 \section{Results}
-% ============================================================
 
-\subsection{The Grade-Boundary Spike Is Large and Ongoing}
+\subsection{The Grade-Boundary Spike Is Massive and Consistent}
 
-Figure~\ref{fig:score_dist} shows the full inspection score distribution.
-Two spikes are immediately visible: one at score 13 (the A/B cutoff) and
-a smaller one at score 28 (the B/C cutoff). Both are consistent with
-boundary leniency.
+Figure~\ref{fig:score_dist} shows the full score distribution. The spike
+at 13 is visually striking. Two grade cutoffs are apparent: one at 13
+(A/B boundary) and a smaller one at 28 (B/C boundary). Both are
+consistent with inspectors rounding near boundaries.
 
-\begin{figure}[h]
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=\columnwidth]{fig1_score_distribution}
-  \caption{Inspection score distribution (2010--2026). Green bars are
-    A-grade inspections; blue are B; red are C. The dashed line shows
-    the expected flat baseline near the A/B cutoff.}
+  \includegraphics[width=0.92\textwidth]{fig1_score_distribution}
+  \caption{Distribution of NYC restaurant inspection scores across all
+    inspection types (2010--2026). Green bars are A-grade inspections
+    (score $\leq 13$), blue are B-grade, and red are C-grade. The dashed
+    black line marks the expected flat baseline near the A/B cutoff,
+    estimated from scores 14--21.}
   \label{fig:score_dist}
-\end{figure}
+\end{figure*}
 
-The chi-square test is conclusive. Observed inspections at scores 12--13
-total 17,863, against an expected 3,033 under a flat distribution. This
-is a surplus of 14,830 inspections, or $+489\%$ above expectation
-($\chi^2 = 30{,}792$, $p \approx 0$). Wellington's 2014 finding has not
-faded. Figure~\ref{fig:bump} provides a zoomed view centered on the A/B
-boundary.
+The chi-square test is conclusive. At scores 12 and 13, we observe
+17,863 inspections against an expected 3,033 under a flat distribution.
+This is an excess of 14,830 inspections, or $+489\%$ above what would
+be expected under fair grading ($\chi^2 = 30{,}792$, $p \approx 0$).
+Wellington's 2014 finding has not only persisted but appears to have
+intensified with more data.
 
-\begin{figure}[h]
+Figure~\ref{fig:bump_borough} breaks the spike down by borough. The excess
+at scores 12 to 13 is large in every part of the city: Bronx ($+359\%$),
+Brooklyn ($+497\%$), Manhattan ($+504\%$), and Queens ($+519\%$).
+Notably, Manhattan and Queens show the largest proportional excesses,
+suggesting that boundary leniency is not more restrained in wealthier
+or more heavily scrutinized areas.
+
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=\columnwidth]{fig2_bump_test}
-  \caption{Zoomed view of scores 5--25. The dashed line shows the
-    expected flat baseline. The spike at 12--13 represents roughly
-    15,000 inspections above what would be expected under uniform grading.}
-  \label{fig:bump}
-\end{figure}
+  \includegraphics[width=0.92\textwidth]{figB_bump_by_borough}
+  \caption{Grade-boundary spike at score 13, replicated separately for
+    each of the four boroughs. The dashed line shows the expected flat
+    baseline. All boroughs show a substantial excess at scores 12--13,
+    ranging from $+359\%$ (Bronx) to $+519\%$ (Queens).}
+  \label{fig:bump_borough}
+\end{figure*}
 
-\subsection{Inspection Scores Have Worsened Substantially}
+\subsection{Inspection Scores Have Worsened Since 2022}
 
-Figure~\ref{fig:temporal} shows mean initial-cycle inspection scores from
-2015 to 2025, after deduplicating to one observation per inspection
-event. The mean score increased from 11.3 in 2015 to 19.0 in 2025. A
-simple linear regression estimates the rate of increase at 0.87 points
-per year ($R^2 = 0.91$, $p < 0.001$). At this pace, the average
-restaurant has shifted from comfortably earning an A on an initial
-inspection in 2015 to scoring squarely in B-grade territory by 2025.
+Among the 2022--2025 initial-cycle inspections where data is
+sufficiently dense, mean score increased from 16.3 in 2022 to 19.0 in
+2025. An OLS regression of annual mean score on year estimates the
+rate of increase at 0.89 points per year ($R^2 = 0.96$, $p = 0.022$).
+Figure~\ref{fig:temporal} shows the trend with 95\% confidence intervals.
 
-\begin{figure}[h]
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=\columnwidth]{fig3_temporal_trend}
-  \caption{Mean and median inspection score by year (initial-cycle
-    inspections only, one row per inspection event). The green dotted
-    line marks the A-grade cutoff at 13.}
+  \includegraphics[width=0.92\textwidth]{fig3_temporal_trend}
+  \caption{Mean and median inspection score by year (2022--2025), initial
+    cycle inspections only, one row per inspection event. Shaded region is
+    a 95\% CI on the mean. The green dotted line marks the A-grade
+    cutoff at 13. The dash-dot line is the OLS fit.}
   \label{fig:temporal}
-\end{figure}
+\end{figure*}
 
-The causes of this trend are not clear from the data alone. Possible
-explanations include genuine deterioration in restaurant hygiene,
-increased inspection stringency, changes in the restaurant population, or
-some combination. Disentangling these explanations would require inspector
-and restaurant fixed effects, which is left for future work.
+Despite the rising mean, the median score hovers around 12 to 13
+throughout this period, which corresponds directly to the grade boundary
+spike identified in Section 4.1. The mean rises because the upper tail
+of the distribution is spreading, but the median is anchored near 13 by
+the concentration of scores just below the grade cutoff.
 
-\subsection{Borough and Cuisine Have Modest but Significant Effects}
+Figure~\ref{fig:agrade_boro} shows A-grade rates by borough from 2022 to
+2025. Manhattan consistently has the highest A-grade rate (roughly 60 to
+63\%), while Queens has the lowest (dropping to about 52\% in 2025).
+All boroughs show a modest declining trend over this period.
 
-Figure~\ref{fig:boro_cuisine} shows score distributions by borough and
-by cuisine hypercategory. Manhattan restaurants score best (median 19),
-followed by the Bronx and Brooklyn (both median 20), with Queens scoring
-worst (median 22). These differences are present but modest in absolute
-terms.
-
-\begin{figure}[h]
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=\columnwidth]{fig4_score_by_borough}
-  \caption{Score distributions by borough. Lower is better. Medians
-    range from 19 (Manhattan) to 22 (Queens).}
-  \label{fig:boro_cuisine}
-\end{figure}
+  \includegraphics[width=0.92\textwidth]{figA_agrade_by_year_borough}
+  \caption{A-grade rate (score $\leq 13$) by year and borough,
+    2022--2025, for initial cycle inspections. Shaded bands are 95\%
+    confidence intervals on the proportions. Manhattan leads throughout;
+    Queens declines most sharply.}
+  \label{fig:agrade_boro}
+\end{figure*}
 
-The two-way blocked ANOVA on $n = 30$ observations per cell confirms
-these patterns. Cuisine hypercategory is a significant predictor
-($F(9,1160) = 4.12$, $p < 0.001$), as is the hypercategory-by-borough
-interaction ($F(27,1160) = 1.54$, $p = 0.038$). Borough alone is only
-marginally significant ($F(3,1160) = 2.25$, $p = 0.081$). Effect sizes
-are modest: the total residual variance ($SS_\text{res} = 482{,}194$)
-dwarfs the variance attributable to borough and cuisine combined
-($SS_\text{model} = 35{,}521$), suggesting that individual restaurant
-practices explain far more of the outcome than geography or cuisine type.
+\subsection{Borough and Cuisine Effects Are Real but Modest}
 
-\subsection{Violation Types Vary Significantly Across Boroughs}
+The OLS regression of inspection score on borough, cuisine, and year
+yields an $R^2$ of just 0.036. Even with year controlled for, only
+3.6\% of the variance in inspection scores is explained by borough and
+cuisine type. This means that the vast majority of variation reflects
+factors specific to individual restaurants rather than their location
+or cuisine.
 
-Figure~\ref{fig:heatmap} shows the rate of each violation category by
-borough, expressed as a percentage of all inspections in that borough.
-The chi-square test strongly rejects independence between violation type
-and borough ($\chi^2 = 678.2$, $df = 66$, $p \approx 2 \times 10^{-102}$).
+Within this limited explanatory power, some patterns are worth noting.
+After controlling for cuisine type and year, Queens scores are
+significantly higher (worse) than the Bronx baseline by 1.64 points
+($p < 0.001$), and Brooklyn by 0.86 points ($p = 0.038$). Manhattan,
+counterintuitively, is not significantly different from the Bronx once
+cuisine composition and year are accounted for ($\beta = 0.12$,
+$p = 0.77$). The apparent advantage of Manhattan restaurants in raw
+comparisons likely reflects their cuisine mix rather than better
+sanitation practices. Figure~\ref{fig:ols_coefs} shows the full
+coefficient plot.
 
-\begin{figure}[h]
+\begin{figure*}[t]
   \centering
-  \includegraphics[width=\columnwidth]{fig5_violation_by_borough}
-  \caption{Violation category rates by borough (\% of inspections).
-    Darker cells indicate higher violation rates. Pest Control and
-    temperature-related violations show the strongest geographic
-    variation.}
-  \label{fig:heatmap}
-\end{figure}
+  \includegraphics[width=0.92\textwidth]{figC_ols_coefs}
+  \caption{OLS regression coefficients for inspection score. Red bars
+    indicate higher (worse) scores relative to the baseline (Bronx,
+    African cuisine, year 2022); green bars indicate lower (better)
+    scores. Error bars are 95\% confidence intervals. Year has a
+    consistent positive effect even after controlling for other factors.}
+  \label{fig:ols_coefs}
+\end{figure*}
 
-Pest Control violations are more concentrated in the Bronx relative to
+Cuisine hypercategory is a stronger predictor than borough. African
+cuisine restaurants serve as the baseline and have the highest expected
+scores; all other groups score significantly or near-significantly lower.
+Beverages \& Sweets establishments score about 9 points better than
+African cuisine restaurants on average ($p < 0.001$), and American
+restaurants score about 8.4 points better ($p < 0.001$). These are
+substantive differences in absolute terms, though the total $R^2$ remains
+low because within-category variation is still large.
+
+The two-way blocked ANOVA ($n = 30$ per cell) confirms these patterns
+formally. Cuisine hypercategory is significant ($F(9,1160) = 4.12$,
+$p < 0.001$) and the interaction between cuisine and borough is also
+significant ($F(27,1160) = 1.54$, $p = 0.038$), indicating that the
+cuisine effect on score differs across boroughs. Borough alone is only
+marginally significant ($F(3,1160) = 2.25$, $p = 0.081$). The full
+ANOVA table is in Appendix~B.
+
+\subsection{Violation Types Vary Substantially Across Boroughs}
+
+Research Question 3 asked whether certain violation types are more common
+in some boroughs than others. The chi-square test of independence strongly
+rejects the null hypothesis of no association between violation type and
+borough ($\chi^2 = 678.2$, $df = 66$, $p \approx 2 \times 10^{-102}$).
+This is an extremely large test statistic, reflecting genuinely different
+violation profiles across the city.
+
+Figure~\ref{fig:heatmap} shows the proportion of inspections in each
+borough that received each violation category. Several patterns stand out.
+Pest Control violations are most concentrated in the Bronx relative to
 other boroughs. Cooling and Refrigeration violations are elevated in
-Manhattan. Queens and Brooklyn show higher rates of Hot Holding
-violations. These patterns likely reflect differences in restaurant type,
-building infrastructure, and neighborhood environment rather than
-inspection rigor alone, though the data cannot distinguish between these
-explanations.
+Manhattan. Queens and the Bronx show notably higher rates of Hot Holding
+violations. Food Workers violations (concerning food handler hygiene)
+are elevated in Brooklyn. These patterns likely reflect a combination of
+building infrastructure differences, restaurant type composition, and
+neighborhood characteristics.
 
-\subsection{Pre-Inspection Features Cannot Reliably Predict Grade}
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.92\textwidth]{fig5_violation_by_borough}
+  \caption{Violation category rate by borough, expressed as the percentage
+    of inspections in that borough that received each violation type.
+    Darker shading indicates higher rates. The chi-square test strongly
+    rejects independence ($\chi^2 = 678.2$, $df = 66$, $p \approx
+    2 \times 10^{-102}$).}
+  \label{fig:heatmap}
+\end{figure*}
 
-The logistic regression using only pre-inspection features achieves an
-AUC of 0.60 and an accuracy of 59.4\% on the held-out test set
-(Table~\ref{tab:model_compare}). Both figures are barely above a
-baseline classifier. The ROC curve is shown in Figure~\ref{fig:roc}.
+\subsection{Which Violations Are Most Associated with Failing an A?}
+
+Figure~\ref{fig:viol_coefs} shows the logistic regression coefficients
+for each violation category, controlling for borough, cuisine, and
+neighborhood income. All violation types with negative coefficients are
+associated with a lower probability of earning an A grade, meaning
+they are associated with higher inspection scores.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.92\textwidth]{figD_violation_coefs}
+  \caption{Logistic regression coefficients for violation category,
+    predicting probability of earning an A grade. Red bars indicate
+    violation types associated with failing an A (negative effect on
+    A-grade probability); green bars indicate violation types that
+    restaurants earning A grades are more likely to have received.
+    Model AUC $= 0.673$.}
+  \label{fig:viol_coefs}
+\end{figure*}
+
+Pest Control violations have the largest negative coefficient, meaning
+that receiving a Pest Control citation during an inspection is the most
+strongly associated with not earning an A grade. Permit violations
+(PERMIT/FPC) and Handwash/Toilet violations follow. Temperature-related
+violations, including Cold Holding and Hot Holding, are also consistently
+negative. On the other end, violations related to Maintenance,
+Construction \& Placement and Plumbing are actually positively associated
+with earning an A grade. This pattern makes sense: structural and
+plumbing violations are often lower-point items that inspectors cite even
+at well-run establishments, whereas temperature and pest violations carry
+higher point values and signal more serious food safety failures.
+
+The violation-level logistic model achieves an AUC of 0.673, meaning it
+correctly ranks a randomly chosen failing inspection above a randomly
+chosen passing inspection about 67\% of the time. This is a reasonable
+result for a logistic model predicting a complex outcome; it demonstrates
+that violation type is meaningfully informative about whether a restaurant
+will pass, even after controlling for cuisine and neighborhood.
+
+\subsection{Pre-Inspection Context Cannot Predict Grade}
+
+The pre-inspection logistic regression, using only borough, cuisine,
+neighborhood income, neighborhood population, and year, achieves an AUC
+of 0.60 and an accuracy of 59.4\% on the held-out test set. Both figures
+are barely above a naive baseline classifier. Figure~\ref{fig:roc} shows
+the ROC curves for both the violation-level model and the pre-inspection
+model side by side.
+
+\begin{figure*}[t]
+  \centering
+  \begin{subfigure}[b]{0.47\textwidth}
+    \includegraphics[width=\textwidth]{fig7_roc_curve}
+    \caption{Pre-inspection model (AUC $= 0.60$).}
+  \end{subfigure}
+  \hfill
+  \begin{subfigure}[b]{0.47\textwidth}
+    \includegraphics[width=\textwidth]{figD_roc_violation}
+    \caption{Violation-level model (AUC $= 0.673$).}
+  \end{subfigure}
+  \caption{ROC curves for the two logistic regression models. Even knowing
+    what type of violations were cited (right) adds substantial
+    information beyond pre-inspection context alone (left). Neither model
+    achieves high AUC, consistent with the finding that most score
+    variation is idiosyncratic to individual restaurants.}
+  \label{fig:roc}
+\end{figure*}
+
+Table~\ref{tab:models} summarizes performance for both models.
 
 \begin{table}[h]
   \centering
   \small
-  \caption{Predictive model performance.}
-  \label{tab:model_compare}
+  \caption{Logistic regression model performance on held-out test sets.}
+  \label{tab:models}
   \begin{tabular}{lcc}
     \toprule
     Model & AUC & Accuracy \\
     \midrule
-    Pre-inspection features & 0.60 & 59.4\% \\
+    Pre-inspection features only & 0.60 & 59.4\% \\
+    With violation type & 0.673 & 67.2\% \\
     \bottomrule
   \end{tabular}
 \end{table}
 
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.85\columnwidth]{fig7_roc_curve}
-  \caption{ROC curve for the pre-inspection logistic regression.
-    An AUC near 0.60 indicates limited predictive power from borough,
-    cuisine, and neighborhood variables alone.}
-  \label{fig:roc}
-\end{figure}
+The gap between the two models (AUC 0.60 vs.\ 0.67) represents the
+additional information contained in what violation types were actually
+cited. That gap exists but is modest, which reinforces the main message:
+inspection outcomes are driven primarily by what happens inside a
+restaurant on a given day, not by where the restaurant is located or
+what kind of food it serves.
 
-This near-chance performance has a clear interpretation: knowing where a
-restaurant is located, what cuisine it serves, and how wealthy its
-neighborhood is tells us very little about whether it will pass
-inspection. Restaurant-level practices and management quality appear to
-drive outcomes far more than contextual factors.
-
-% ============================================================
 \section{Model Validation}
-% ============================================================
 
-The predictive logistic regression was evaluated on a stratified 80/20
-hold-out split, with standardization fit only on training data. No
-information from the test set influenced model training. The modest AUC
-of 0.60 reflects the genuine difficulty of predicting inspection outcomes
-from pre-inspection characteristics rather than any deficiency in the
-modeling approach.
+Both logistic regressions were evaluated on stratified 80/20 hold-out
+splits, with standardization fit only on training data, ensuring no
+information from the test set influenced model training or preprocessing.
+The reported AUC values are honest out-of-sample estimates.
 
-For the ANOVA, we used balanced sampling across cells ($n = 30$ per
-cell) to avoid the problem common in large observational datasets where
-even negligible effect sizes produce highly significant $p$-values. The
-results should be interpreted with effect sizes in mind rather than
-$p$-values alone. Residual variance far exceeds the variance explained by
-the model terms, placing clear limits on how much the between-group
-differences matter practically.
+For the ANOVA, balanced sampling ($n = 30$ per cell) was chosen
+deliberately. With over 100,000 inspection records in the dataset, fitting
+the ANOVA on the full data would produce near-zero $p$-values for
+substantively tiny effects due to the extremely high power of large-sample
+tests. The balanced design forces interpretations to rely on effect
+magnitudes, which are modest, rather than $p$-values alone.
 
-The chi-square tests for the bump and the violation-by-borough analysis
-use the full dataset and are therefore extremely well-powered. Effect
-sizes in both cases are substantive: the 489\% excess at the grade
-boundary is not a statistical artifact, and the geographic variation in
-violation types is pronounced enough to be visible in the raw heatmap.
+The OLS regression reports $R^2 = 0.036$. This is not a modeling failure
+but a substantive finding: borough, cuisine, and year together explain
+less than 4\% of the total variance in inspection scores. The remaining
+96\% reflects within-group variation, driven by factors specific to
+individual restaurants and individual inspection days that our data does
+not capture.
 
-% ============================================================
+The chi-square tests for the bump analysis and the violation-by-borough
+analysis are extremely well-powered at this sample size. The observed
+effect sizes in both cases, a 489\% excess at the grade boundary and a
+chi-square statistic of 678 for violation-by-borough, are substantive
+enough to be visible in raw counts and not statistical artifacts.
+
 \section{Conclusion}
-% ============================================================
 
-Four findings stand out from this analysis.
+Four findings emerge from this analysis.
 
-Grade-boundary leniency is real and has not diminished since Wellington's
-2014 report. Nearly 15,000 inspections appear at scores 12--13 in excess
-of what a fair distribution would predict. The NYC Health Department's
-denial notwithstanding, the pattern in the data is striking and
-consistent.
+The grade-boundary spike documented by Wellington in 2014 remains large
+and statistically unambiguous. With data through 2026, we observe nearly
+15,000 excess inspections at scores 12 and 13 relative to what a uniform
+distribution would predict, an excess of 489\%. This pattern holds in
+every borough. Despite the Health Department's assurances to the contrary,
+the data continues to suggest that inspectors exercise leniency near the
+A/B boundary, and the spike at the B/C cutoff (score 28) provides
+additional corroboration.
 
-Inspection scores have worsened materially over the past decade. The
-mean initial-inspection score rose by roughly 0.87 points per year from
-2015 to 2025, moving from A-grade territory to solidly B-grade territory.
-Whether this reflects actual deterioration in restaurant conditions or a
-shift in inspection behavior is an important open question.
+Inspection scores are worsening. Among initial-cycle inspections from 2022
+to 2025, the mean score increased by roughly 0.9 points per year. The
+A-grade rate has declined modestly across all four boroughs. Whether this
+reflects actual deterioration in restaurant sanitation, changes in
+inspection stringency, or shifts in the restaurant population is an
+important open question that the available data cannot answer on its own.
 
 Violation types are not geographically uniform. Different boroughs show
 distinct violation profiles, with Pest Control violations elevated in the
-Bronx and temperature-related violations more prevalent in Manhattan and
-outer boroughs. This geographic heterogeneity is highly statistically
-significant and may be useful for targeted public health outreach.
+Bronx, temperature-related violations more concentrated in Manhattan and
+Queens, and Food Workers violations elevated in Brooklyn. These differences
+are highly statistically significant and suggest that food safety
+interventions targeted by borough and violation type might be more
+effective than uniform city-wide approaches.
 
-Finally, context does not predict outcomes. With an AUC of 0.60, knowing
-a restaurant's borough, cuisine, and neighborhood income cannot
-meaningfully forecast whether it will earn an A. This reinforces the
-conclusion from the ANOVA: most of the variation in inspection scores is
-within-group, driven by factors specific to individual restaurants rather
-than their broader context.
+Pre-inspection context has little predictive power. Knowing a restaurant's
+borough, cuisine, and neighborhood income allows us to correctly classify
+its inspection outcome only about 60\% of the time. This is barely better
+than guessing. Even adding violation type only brings AUC to 0.67.
+Restaurant-level practices and management quality, the things we cannot
+observe in this dataset, appear to be the primary drivers of inspection
+outcomes.
 
 Future work could examine whether the grade-boundary spike varies by
-borough or inspector team, or test whether the temporal worsening trend
-persists after controlling for changes in the restaurant population.
+inspector team or time of year, model temporal trends at the
+restaurant level using fixed effects to separate individual restaurant
+trajectories from city-wide shifts, or link inspection records to
+consumer review data to assess whether lower grades actually translate
+to lower revenue and behavioral change.
 
-% ============================================================
 \appendix
-\section*{Appendix A: Literature Review}
-% ============================================================
 
-% TODO: paste in HW2 literature review
+\section{Literature Review}
 
-% ============================================================
-\section*{Appendix B: ANOVA Table}
-% ============================================================
+Our project was motivated by two bodies of work. The first is Wellington's
+(2014) original analysis identifying the spike at score 13. The second is
+the public health literature evaluating whether these grades actually
+affect health outcomes.
+
+Firestone and Hedberg (2018) examined Salmonella infection rates in NYC
+versus the rest of New York State from 1994 to 2015, using a
+quasi-experimental interrupted time-series design. They found that
+following the letter-grading program's launch in July 2010, NYC's
+Salmonella rates declined by 5.3\% per year relative to the rest of the
+state (IRR $= 0.95$, 95\% CI: $0.92$--$0.98$, $p < 0.01$). Before 2010,
+NYC rates were significantly higher than the state average; by 2011--2015,
+the two were statistically indistinguishable.
+
+The authors are careful about causal attribution, noting that the grading
+program coincided with other policy changes including increased inspection
+frequency and higher fines. They also point to ecological study
+limitations: case counts are based on residence, not on where individuals
+ate. Nevertheless, their finding provides strong motivation for our
+project. If better grades are associated with fewer foodborne illnesses at
+the population level, then understanding what drives variation in grades
+becomes a question with direct public health consequences.
+
+Their paper also highlights a concern directly relevant to our predictive
+modeling: the grade itself is an aggregate summary of many underlying
+violation-level decisions. By modeling violation-level detail, we aim to
+decompose what the grade reflects, which is what Firestone and Hedberg
+treat as a black box.
+
+\section{ANOVA Table}
 
 \begin{table}[h]
   \centering
   \small
-  \caption{Two-way ANOVA results ($n = 30$ per cell, Bronx and African
-    cuisine as baselines, Staten Island and Dietary Style excluded).}
+  \caption{Two-way ANOVA results. Balanced sample with $n = 30$ per
+    hypercategory-borough cell. Baseline: Bronx borough, African cuisine.
+    Staten Island and Dietary Style hypercategory excluded.}
   \label{tab:anova}
   \begin{tabular}{lrrrl}
     \toprule
-    Term & Df & $F$ & $p$ & \\
+    Source & Df & $F$ & $p$ & \\
     \midrule
-    Hypercategory & 9 & 4.12 & $<0.001$ & *** \\
-    Borough & 3 & 2.25 & 0.081 & . \\
-    Hypercategory $\times$ Borough & 27 & 1.54 & 0.038 & * \\
-    Residuals & 1160 & & & \\
+    Hypercategory         & 9  & 4.12 & $<0.001$ & *** \\
+    Borough               & 3  & 2.25 & 0.081    & .   \\
+    Hypercategory:Borough & 27 & 1.54 & 0.038    & *   \\
+    Residuals             & 1160 & & & \\
     \bottomrule
-    \multicolumn{5}{l}{\small Signif.: *** $p<0.001$, * $p<0.05$, . $p<0.1$}
+    \multicolumn{5}{l}{\footnotesize Signif.: *** $p<0.001$, * $p<0.05$, . $p<0.1$}
   \end{tabular}
 \end{table}
 
-% ============================================================
-\section*{Appendix C: Additional Figures}
-% ============================================================
+\section{Additional Figures}
 
 \begin{figure}[h]
   \centering
-  \includegraphics[width=\columnwidth]{fig6_score_by_cuisine}
-  \caption{Score distributions by cuisine hypercategory. African and
-    European restaurants score best on average; Dish-Type and Beverages
-    \& Sweets score worst.}
+  \includegraphics[width=\columnwidth]{figE_score_by_cuisine_violin}
+  \caption{Score distribution by cuisine hypercategory (violin plot).
+    Sample sizes are shown for each group. African and Middle Eastern
+    restaurants tend to score worst; Beverages \& Sweets and American
+    establishments tend to score best. The blue median lines illustrate
+    the cuisine effect documented in the regression.}
 \end{figure}
 
 \begin{figure}[h]
   \centering
   \includegraphics[width=\columnwidth]{fig8_coef_plot}
-  \caption{Top 15 coefficients from the pre-inspection logistic
-    regression. Green indicates positive association with earning an A;
-    red indicates negative association. No predictor has a large
-    coefficient, consistent with the low AUC.}
+  \caption{Top predictors from the pre-inspection logistic regression
+    (borough, cuisine, neighborhood variables). No predictor has a
+    large coefficient, consistent with the low AUC of 0.60 for this
+    model.}
 \end{figure}
 
-% ============================================================
-\section*{Appendix D: Code}
-% ============================================================
+\section{Code}
 
-Python analysis code is in \texttt{new\_analysis.py}. The R analysis
-and ANOVA are in \texttt{group\_analysis.Rmd}. Both files are submitted
-alongside this report.
+Python analysis code is in \texttt{new\_analysis.py} and
+\texttt{extended\_analysis.py}. The R analysis and ANOVA are in
+\texttt{group\_analysis.Rmd}. All files are submitted alongside this
+report.
 
 \begin{thebibliography}{9}
+
 \bibitem{wellington2014}
   Wellington, B. (2014).
   \textit{Think NYC Restaurant Grading is Flawed? Here's the Proof.}
   I Quant NY.
   \url{https://iquantny.tumblr.com/post/76928412519}
+
+\bibitem{firestone2018}
+  Firestone, M.~J. \& Hedberg, C.~W. (2018).
+  Restaurant inspection letter grades and Salmonella infections,
+  New York, New York, USA.
+  \textit{Emerging Infectious Diseases}, 24(12), 2164--2168.
+  \url{https://doi.org/10.3201/eid2412.180544}
+
 \end{thebibliography}
 
 \end{document}
