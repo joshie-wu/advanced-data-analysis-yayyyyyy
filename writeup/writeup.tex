@@ -11,6 +11,7 @@
 \usepackage{parskip}
 \usepackage{array}
 \usepackage{microtype}
+\usepackage{float}
 
 \setlength{\parskip}{4pt}
 \graphicspath{{figures/}}
@@ -277,22 +278,11 @@ of the exclusion window.
   \label{fig:mccrary}
 \end{figure*}
 
-Figure~\ref{fig:bump_borough} breaks the spike down by borough. The
-pattern is present in all four boroughs: the Bronx shows a +359\% excess
-at scores 12--13, Brooklyn +497\%, Manhattan +504\%, and Queens +519\%.
-The size of the excess does not appear smaller in Manhattan or in
-boroughs with higher median incomes, which is inconsistent with the
-idea that the pattern is driven by less-monitored areas alone.
-
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=0.92\textwidth]{figB_bump_by_borough}
-  \caption{Grade-boundary spike replicated separately for each borough.
-    The dashed line shows the expected flat baseline. Every borough shows
-    a large excess at scores 12--13, ranging from +359\% (Bronx) to
-    +519\% (Queens).}
-  \label{fig:bump_borough}
-\end{figure*}
+The spike replicates separately within each borough (Appendix~D,
+Figure~\ref{fig:bump_borough}): Bronx +359\%, Brooklyn +497\%, Manhattan
++504\%, Queens +519\%. The excess does not shrink in Manhattan or in
+higher-income boroughs, which is inconsistent with the idea that the
+pattern is driven by less-monitored areas alone.
 
 \subsection{Individual Restaurants Cluster Near the Boundary}
 
@@ -362,20 +352,11 @@ boundary spike is ongoing: the concentration of scores at 12--13 pins the
 median near the grade cutoff even as the rest of the distribution shifts
 upward.
 
-Figure~\ref{fig:agrade_boro} shows A-grade rates by borough from 2022 to
-2025. Manhattan maintains the highest A-grade rate throughout (roughly
-60--63\%), while Queens has the lowest and shows the steepest decline
-(dropping to about 52\% by 2025). All boroughs are trending downward,
-consistent with the overall score worsening.
-
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=0.92\textwidth]{figA_agrade_by_year_borough}
-  \caption{A-grade rate by year and borough (2022--2025), initial cycle
-    inspections. Shaded bands are 95\% confidence intervals on the
-    proportions. Manhattan leads throughout; Queens declines most sharply.}
-  \label{fig:agrade_boro}
-\end{figure*}
+A-grade rates by borough from 2022 to 2025 are shown in Appendix~D
+(Figure~\ref{fig:agrade_boro}). Manhattan maintains the highest rate
+throughout (roughly 60--63\%), while Queens has the lowest and shows
+the steepest decline (dropping to about 52\% by 2025). All boroughs
+trend downward, consistent with the overall score worsening.
 
 \subsection{Borough and Cuisine Effects Are Present but Modest}
 
@@ -397,19 +378,7 @@ Cuisine hypercategory is a stronger predictor than borough. All
 hypercategories score better than African cuisine restaurants, which serve
 as the baseline, by margins of roughly 3 to 9 points (all $p < 0.05$
 except East Asian and South \& SE Asian). The full coefficient plot is
-in Figure~\ref{fig:ols_coefs}.
-
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=0.92\textwidth]{figC_ols_coefs}
-  \caption{OLS regression coefficients for inspection score. Red bars
-    indicate higher (worse) scores; green bars indicate lower (better)
-    scores, relative to Bronx / African cuisine / year 2022 baselines.
-    Error bars are 95\% confidence intervals. Year has a consistent,
-    significant positive effect even after controlling for borough and
-    cuisine.}
-  \label{fig:ols_coefs}
-\end{figure*}
+in Appendix~D (Figure~\ref{fig:ols_coefs}).
 
 The two-way balanced ANOVA ($n = 30$ per cell) confirms these patterns.
 Cuisine hypercategory shows a significant effect ($F(9,1160) = 4.12$,
@@ -551,17 +520,8 @@ adding violation type (information available only during the inspection)
 does provide a meaningful lift to AUC $= 0.673$, confirming that the
 limitation is in the feature set rather than the modeling approach.
 
-Figure~\ref{fig:roc_compare} shows the ROC curves for all models.
-
-\begin{figure*}[t]
-  \centering
-  \includegraphics[width=0.7\textwidth]{fig_model_comparison_roc}
-  \caption{ROC curves for the three pre-inspection predictive models.
-    All three cluster near AUC $= 0.60$, slightly above the diagonal
-    (random guessing), confirming that borough, cuisine, and neighborhood
-    variables provide limited predictive power regardless of model choice.}
-  \label{fig:roc_compare}
-\end{figure*}
+ROC curves for all three models are in Appendix~D
+(Figure~\ref{fig:roc_compare}).
 
 \section{Model Validation and Diagnostics}
 
@@ -646,6 +606,7 @@ inspection records to consumer review data to assess whether declining
 A-grade rates translate to behavioral changes by diners.
 
 \clearpage
+\onecolumn
 \appendix
 
 \section{Literature Review}
@@ -676,7 +637,7 @@ becomes a question with direct public health implications.
 
 \section{ANOVA Table}
 
-\begin{table}[h]
+\begin{table}[H]
   \centering
   \small
   \caption{Two-way ANOVA results. Balanced design with $n = 30$ per
@@ -698,9 +659,9 @@ becomes a question with direct public health implications.
 
 \section{ANOVA Residual Diagnostics}
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=\columnwidth]{fig_anova_diagnostics}
+  \includegraphics[width=\textwidth]{fig_anova_diagnostics}
   \caption{ANOVA residual distribution (left) and normal Q-Q plot
     (right) for a sample of 3,000 observations. Residuals are clearly
     right-skewed, violating the normality assumption. This motivates
@@ -711,16 +672,55 @@ becomes a question with direct public health implications.
 
 \section{Additional Figures}
 
-\begin{figure*}[h]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=0.92\textwidth]{fig_confusion_matrices}
+  \includegraphics[width=\textwidth]{figB_bump_by_borough}
+  \caption{Grade-boundary spike replicated separately for each borough.
+    The dashed line shows the expected flat baseline. Every borough shows
+    a large excess at scores 12--13, ranging from +359\% (Bronx) to
+    +519\% (Queens).}
+  \label{fig:bump_borough}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figA_agrade_by_year_borough}
+  \caption{A-grade rate by year and borough (2022--2025), initial cycle
+    inspections. Shaded bands are 95\% confidence intervals on the
+    proportions. Manhattan leads throughout; Queens declines most sharply.}
+  \label{fig:agrade_boro}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{figC_ols_coefs}
+  \caption{OLS regression coefficients for inspection score. Red bars
+    indicate higher (worse) scores; green bars indicate lower (better)
+    scores, relative to Bronx / African cuisine / year 2022 baselines.
+    Error bars are 95\% confidence intervals.}
+  \label{fig:ols_coefs}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{fig_model_comparison_roc}
+  \caption{ROC curves for the three pre-inspection predictive models.
+    All three cluster near AUC $= 0.60$, slightly above the diagonal,
+    confirming that pre-inspection features provide limited predictive
+    power regardless of model choice.}
+  \label{fig:roc_compare}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=\textwidth]{fig_confusion_matrices}
   \caption{Confusion matrices for the three pre-inspection predictive models.
     All three models show similar error patterns, consistent with the low AUC.}
-\end{figure*}
+\end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
   \centering
-  \includegraphics[width=\columnwidth]{figE_score_by_cuisine_violin}
+  \includegraphics[width=0.8\textwidth]{figE_score_by_cuisine_violin}
   \caption{Score distributions by cuisine hypercategory. African and
     Middle Eastern restaurants tend to score worst; Beverages \& Sweets
     and American establishments score best.}
