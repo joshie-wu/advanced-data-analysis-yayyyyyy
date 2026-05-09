@@ -299,18 +299,26 @@ idea that the pattern is driven by less-monitored areas alone.
 Among the 5,059 restaurants with at least two initial-cycle inspections,
 the mean fraction of inspections landing at scores 12 or 13 is 21.1\%.
 The expected fraction under the null hypothesis, derived from the overall
-marginal rate of scores 12--13 in the data, is 17.5\%. A one-sample
-$t$-test comparing the observed restaurant-level rates to this null yields
-$t = 9.12$ ($p < 0.001$).
+marginal rate of scores 12--13 in the data, is 17.5\%. A one-sample $t$-test comparing the observed restaurant-level rates to
+this null yields $t = 9.12$ ($p < 0.001$).
 
-This finding is meaningful for two reasons. First, it shows that the
-boundary spike cannot be explained entirely by a few outlier inspections
-skewing the aggregate count. Instead, the tendency to score near 13 is
-distributed across many individual restaurants. Second, it suggests that
-at least part of the pattern may involve restaurant behavior, not only
-inspector behavior: restaurants may time inspections, make targeted
-improvements, or have learned which violations are most likely to push
-them over the cutoff.
+This rules out the possibility that the aggregate spike is driven by a
+handful of extreme outliers. The tendency to score near 13 is spread
+across many individual restaurants. It also raises the question of
+mechanism: is this inspector discretion, restaurant behavior, or some
+combination? Restaurants may time their inspections, make targeted
+corrections before a scheduled visit, or have learned over time which
+violations are most likely to push their score just over the cutoff.
+The data cannot distinguish between these explanations, but the
+restaurant-level pattern is consistent with strategic behavior on both
+sides of the interaction.
+
+We note a limitation: the null rate used here (the aggregate marginal rate
+of scoring 12--13 in the full dataset) does not account for heterogeneous
+restaurant quality or the dependence of repeated inspections within the
+same establishment. The test should be read as showing that restaurants
+land at scores 12--13 more often than implied by the aggregate marginal
+rate, not as a formal test against a fully specified null model.
 
 Figure~\ref{fig:threshold} shows the distribution of restaurant-level
 boundary rates, with the null rate and observed mean indicated.
@@ -451,10 +459,9 @@ that a restaurant receiving a Pest Control citation is most strongly
 associated with not earning an A grade. Permit, Handwash / Toilet, Cold
 Holding, and Hot Holding violations follow. On the positive end,
 Maintenance and Plumbing violations are associated with a higher
-probability of earning an A. This pattern is sensible: structural and
-plumbing deficiencies are often lower-severity items cited at otherwise
-compliant restaurants, while temperature and pest violations are more
-serious, higher-point failures.
+probability of earning an A. Structural and plumbing deficiencies tend to be lower-severity items
+cited at otherwise compliant restaurants, while temperature and pest
+violations carry heavier point penalties and are harder to fix in place.
 
 \begin{figure*}[t]
   \centering
@@ -465,6 +472,45 @@ serious, higher-point failures.
     association. Model AUC $= 0.673$, controlling for borough, cuisine,
     and neighborhood income.}
   \label{fig:viol_coefs}
+\end{figure*}
+
+\subsection{Prior Grade Predicts Future Score Trajectory}
+
+One question the data can answer directly is whether receiving a particular
+grade in one inspection tells us anything about what happens next. We matched
+each restaurant's consecutive initial-cycle inspection pairs and computed score
+changes by prior grade.
+
+The results are in Figure~\ref{fig:trajectory}. Restaurants that earned a C
+improved dramatically by their next visit, falling by 21.2 points on average
+(vs.\ A-grade change: $t = -51.95$, $p \approx 0$). Restaurants that had
+earned a B also improved, but more modestly: mean next-inspection score dropped
+by 2.4 points. The median next score for B-earners landed at exactly 13 ---
+just inside the A-grade boundary. Restaurants that had already earned an A
+drifted slightly upward (worse), by an average of 6.0 points.
+
+The probability of earning an A on the next inspection tracks the same
+gradient: 70\% for restaurants coming off an A, 56\% for B earners, and 44\%
+for C earners ($t$ for B vs.\ A: $-19.53$, $p \approx 0$).
+
+The B-grade trajectory is the most striking. When a restaurant receives a B,
+its next score most often lands right at 13. This mirrors the aggregate spike
+in the cross-sectional distribution and suggests the boundary effect is not
+just a one-off statistical artifact but plays out repeatedly within individual
+restaurants over time. Whether it reflects targeted compliance corrections,
+inspector discretion, or some combination, the data cannot say. But the
+pattern is hard to dismiss.
+
+\begin{figure*}[t]
+  \centering
+  \includegraphics[width=0.92\textwidth]{fig_trajectory}
+  \caption{\textit{Left:} Distribution of next-inspection score by prior grade.
+    \textit{Center:} Mean score change from one inspection to the next, with
+    95\% confidence intervals. C-grade restaurants improve by 21 points on
+    average; A-grade restaurants drift slightly worse.
+    \textit{Right:} Probability of earning an A on the next inspection by
+    prior grade (A: 70\%, B: 56\%, C: 44\%).}
+  \label{fig:trajectory}
 \end{figure*}
 
 \subsection{Pre-Inspection Context Cannot Meaningfully Predict Grade}
@@ -496,11 +542,11 @@ regression.
   \end{tabular}
 \end{table}
 
-The convergence of all three models near AUC $= 0.60$ is informative in
-itself. It rules out the possibility that low logistic regression
-performance was due to model misspecification. The pre-inspection features
-simply do not contain enough information to predict inspection outcomes,
-regardless of the classifier used. The bottom row of the table shows that
+That all three models land at AUC $\approx 0.60$ rules out the simplest
+alternative explanation: that the logistic regression was underperforming
+due to model misspecification. It was not. The pre-inspection features
+just do not contain enough information to predict inspection outcomes,
+regardless of how the classifier is specified. The bottom row of the table shows that
 adding violation type (information available only during the inspection)
 does provide a meaningful lift to AUC $= 0.673$, confirming that the
 limitation is in the feature set rather than the modeling approach.
@@ -543,9 +589,13 @@ of the trend rather than a formal test.
 The density discontinuity analysis was subjected to explicit uncertainty
 quantification through bootstrapping. The 95\% CI for the excess at
 scores 12--13 is [13,472, 13,996], with essentially no probability
-mass near zero. The result is robust to the degree of the polynomial
-(tested at degrees 2, 3, 4, and 5) and to the width of the exclusion
-window (tested at $\pm 6$ and $\pm 8$ around the cutoff).
+mass near zero. We acknowledge that the choice of polynomial degree and
+exclusion window are somewhat arbitrary. We tested polynomial degrees 2
+through 5 and exclusion windows of $\pm 6$ and $\pm 8$ scores around
+the cutoff; the excess estimate ranged from approximately 12,800 to 14,200
+across all combinations, and the 95\% bootstrap CI never approached zero.
+The substantive conclusion is insensitive to these choices, even if the
+exact number is not.
 
 \section{Conclusion}
 
@@ -557,10 +607,14 @@ Using a polynomial smooth counterfactual rather than a flat baseline, we
 estimate a surplus of roughly 13,700 inspections at scores 12--13
 above what the surrounding distribution would predict (+333\%, 95\% CI:
 [13,472, 13,996]). The same pattern shows up at the level of individual
-restaurants: establishments land at scores 12--13 significantly more
-often than would be expected by chance ($t = 9.12$, $p < 0.001$). The
-data are consistent with discretionary scoring near grade thresholds,
-though observational data alone cannot confirm the mechanism.
+restaurants: establishments land at scores 12--13 more often than
+implied by the aggregate marginal rate ($t = 9.12$, $p < 0.001$). The
+boundary effect also appears in consecutive inspection trajectories.
+When a restaurant earns a B, its next inspection score most frequently
+lands at exactly 13. This suggests the boundary spike is not just a
+cross-sectional artifact but repeats within individual restaurants
+over time. The data are consistent with discretionary scoring near grade
+thresholds, though observational data alone cannot confirm the mechanism.
 
 Inspection scores have worsened over the period with reliable data (2022
 to 2025), increasing at roughly 0.9 points per year across all boroughs.
@@ -591,6 +645,7 @@ to separate individual trajectories from city-wide shifts, or link
 inspection records to consumer review data to assess whether declining
 A-grade rates translate to behavioral changes by diners.
 
+\clearpage
 \appendix
 
 \section{Literature Review}
