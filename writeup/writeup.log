@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.9.13)  8 MAY 2026 21:01
+This is pdfTeX, Version 3.141592653-2.6-1.40.27 (MiKTeX 25.4) (preloaded format=pdflatex 2025.9.13)  8 MAY 2026 21:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -755,7 +755,7 @@ Package rerunfilecheck Info: File `writeup.out' has not changed.
 Here is how much of TeX's memory you used:
  14296 strings out of 468133
  232232 string characters out of 5430712
- 677346 words of memory out of 5000000
+ 677364 words of memory out of 5000000
  42539 multiletter control sequences out of 15000+600000
  642597 words of font info for 159 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -775,7 +775,7 @@ b><C:/Users/mara_/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/
 cmsy8.pfb><C:/Users/mara_/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsf
 onts/cm/cmti10.pfb><C:/Users/mara_/AppData/Local/Programs/MiKTeX/fonts/type1/pu
 blic/amsfonts/cm/cmtt10.pfb>
-Output written on writeup.pdf (17 pages, 1341830 bytes).
+Output written on writeup.pdf (17 pages, 1342528 bytes).
 PDF statistics:
  334 PDF objects out of 1000 (max. 8388607)
  65 named destinations out of 1000 (max. 500000)
